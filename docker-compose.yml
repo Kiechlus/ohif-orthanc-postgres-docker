@@ -2,13 +2,13 @@ version: '3.6'
 services:
 
   viewer:
-    image: ohif/viewer:v3.7.1.10058
+    image: ohif/viewer:latest
     container_name: viewer
     depends_on:
       - orthanc
     restart: always
     ports:
-      - '80:80'
+      - '8000:80'
     networks:
       - frontend
       - backend
@@ -19,39 +19,42 @@ services:
       - ${VIEWER_CONFIG}:/usr/share/nginx/html/app-config.js:ro
 
   orthanc:
-    image: osimis/orthanc:20.2.0
+    image: osimis/orthanc:latest
     container_name: orthanc
-    depends_on:
-      - postgres
     restart: always
+    ports:
+      - '8042:8042'
     networks:
       - frontend
       - backend
     volumes:
-      # configuration file
-      - ${ORTHANC_CONFIG}:/etc/orthanc/orthanc.json:ro
       # storage volume for raw dicoms
       - ${ORTHANC_DB_MNT}:/var/lib/orthanc/db
     environment:
-      # DICOMWeb Plugin
-      - DW_ENABLED=true
-      # Postgres Plugin
-      - PG_ENABLED=true
-    command: /etc/orthanc/orthanc.json
-
-  postgres:
-    image: postgres:12.1
-    container_name: postgres
-    networks:
-      - backend
-    volumes:
-      - ${POSTGRES_DATA_MNT}:${PGDATA}
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - PGDATA=${PGDATA}
-      - POSTGRES_DB=orthanc
+      - ORTHANC__DICOM_WEB__ENABLE=true
+      - ORTHANC__DICOM_WEB__ROOT=/dicom-web/
+      - ORTHANC__DICOM_WEB__ENABLE_WADO=true
+      - ORTHANC__DICOM_WEB__WADO_ROOT=/wado
+      - ORTHANC__DICOM_WEB__SSL=false
+      - ORTHANC__DICOM_WEB__QIDO_CASE_SENSITIVE=true
+      - ORTHANC__DICOM_WEB__STUDIES_METADATA=Full
+      - ORTHANC__DICOM_WEB__SERIES_METADATA=Full
+      - ORTHANC__AUTHENTICATION_ENABLED=false
 
 networks:
   frontend:
   backend:
+
+
+
+  #  "DicomWeb" : {
+  #     "Enable" : true,            // Whether DICOMweb support is enabled
+  #     "Root" : "/dicom-web/",     // Root URI of the DICOMweb API (for QIDO-RS, STOW-RS and WADO-RS)
+  #     "EnableWado" : true,        // Whether WADO-URI (previously known as WADO) support is enabled
+  #     "WadoRoot" : "/wado",       // Root URI of the WADO-URI (aka. WADO) API
+  #     "Ssl" : false,              // Whether HTTPS should be used for subsequent WADO-RS requests
+  #     "QidoCaseSensitive" : true, // For QIDO-RS server, whether search is case sensitive (since release 0.5)
+  #     // "Host" : "localhost",       // Hard-codes the name of the host for subsequent WADO-RS requests (deprecated)
+  #     "StudiesMetadata" : "Full", // How study-level metadata is retrieved (since release 1.1, cf. section below)
+  #     "SeriesMetadata" : "Full"   // How series-level metadata is retrieved (since release 1.1, cf. section below)
+  #   }

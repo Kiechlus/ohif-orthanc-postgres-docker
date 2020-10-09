@@ -3,15 +3,15 @@ window.config = {
     routerBasename: '/',
     whiteLabelling: {},
     extensions: [],
-    showStudyList: true,
+    showStudyList: false,
     filterQueryParam: false,
     servers: {
       dicomWeb: [
         {
           name: 'ORTHANC',
-          wadoUriRoot: 'http://localhost:80/pacs/wado',
-          qidoRoot: 'http://localhost:80/pacs/dicom-web',
-          wadoRoot: 'http://localhost:80/pacs/dicom-web',
+          wadoUriRoot: 'http://localhost:8000/pacs/wado',
+          qidoRoot: 'http://localhost:8000/pacs/dicom-web',
+          wadoRoot: 'http://localhost:8000/pacs/dicom-web',
           qidoSupportsIncludeField: true,
           imageRendering: 'wadors',
           thumbnailRendering: 'wadors',

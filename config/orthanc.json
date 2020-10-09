@@ -155,7 +155,7 @@
     // "AuthenticationEnabled" is not explicitly set, authentication is
     // enabled iff. remote access is allowed (i.e. the default value of
     // "AuthenticationEnabled" equals that of "RemoteAccessAllowed").
-    "AuthenticationEnabled" : true,
+    "AuthenticationEnabled" : false,
 
       // The list of the registered users. Because Orthanc uses HTTP
     // Basic Authentication, the passwords are stored as plain text.
@@ -529,16 +529,6 @@
       // "Host" : "localhost",       // Hard-codes the name of the host for subsequent WADO-RS requests (deprecated)
       "StudiesMetadata" : "Full", // How study-level metadata is retrieved (since release 1.1, cf. section below)
       "SeriesMetadata" : "Full"   // How series-level metadata is retrieved (since release 1.1, cf. section below)
-    },
-
-    "PostgreSQL": {
-      "EnableIndex": true,
-      "EnableStorage": false, // DICOM files are stored in the Orthanc container in /var/lib/orthanc/db/
-      "Host": "postgres", // the name of the PostgreSQL container
-      "Port" : 5432,
-      "Database": "orthanc", // default database name in PostgreSQL container (no need to create it)
-      "Username": "postgres", // default user name in PostgreSQL container (no need to create it)
-      "Password" : "pgpassword"
     }
   }
   
